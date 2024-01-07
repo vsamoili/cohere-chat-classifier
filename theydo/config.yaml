@@ -1,0 +1,4 @@
+training_dir: resources/data/training/train-00000-of-00001.parquet
+test_dir: resources/data/test/test-00000-of-00001.parquet
+generation_model: command
+classification_model: large

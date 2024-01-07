@@ -161,6 +161,7 @@ cython_debug/
 
 
 # Data
-/resources/data/testing/*
+/resources/data/test/*
 /resources/data/training/*
 /resources/data/unsupervised/*
+/resources/data/metadata/*

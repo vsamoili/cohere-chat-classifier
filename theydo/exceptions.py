@@ -1,0 +1,2 @@
+class DatasetDoesNotExist(Exception):
+    pass

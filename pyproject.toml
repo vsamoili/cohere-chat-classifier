@@ -8,7 +8,17 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 fastapi = "^0.108.0"
+pandas = "^2.1.4"
+python-dotenv = "^1.0.0"
+cohere = "^4.40"
+pyyaml = "^6.0.1"
+pyarrow = "^14.0.2"
+uvicorn = {extras = ["standard"], version = "^0.25.0"}
 
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.4.4"
+jupyter = "^1.0.0"
 
 [build-system]
 requires = ["poetry-core"]
