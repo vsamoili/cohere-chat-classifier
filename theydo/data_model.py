@@ -27,6 +27,11 @@ class Dataset:
         return self.df.label.apply(lambda x: ['negative', 'positive'][x == 1])
 
     @property
+    def numeric_labels(self) -> pd.Series:
+        # Labels in Cohere model must be strings
+        return self.df.label
+
+    @property
     def text_to_list(self) -> List[str]:
         return self.text.to_list()
 
