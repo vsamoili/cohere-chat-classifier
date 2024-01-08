@@ -36,7 +36,7 @@ class Dataset:
         return self.text.to_list()
 
     @property
-    def labels_to_list(self) -> List[int]:
+    def labels_to_list(self) -> List[str]:
         return self.labels.to_list()
 
 
