@@ -1,16 +1,16 @@
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import pandas as pd
 
 from theydo import config
-from theydo.exceptions import DatasetDoesNotExist
+from theydo.exceptions import DatasetDoesNotExist, LabelFormatError
 
 
 class Dataset:
 
-    def __init__(self, full_dir: str | Path):
-        self.df = None
+    def __init__(self, df: Optional[pd.DataFrame] = None, full_dir: Optional[str | Path] = None):
+        self.df = df
         self.full_dir = full_dir
 
     def load(self):
@@ -24,12 +24,17 @@ class Dataset:
     @property
     def labels(self) -> pd.Series:
         # Labels in Cohere model must be strings
-        return self.df.label.apply(lambda x: ['negative', 'positive'][x == 1])
+        if set(self.df.label) == {0, 1}:
+            return self.df.label.apply(lambda x: ['negative', 'positive'][x == 1])
+        elif set(self.df.label) == {'positive', 'negative'}:
+            return self.df.label
+        else:
+            raise LabelFormatError("Unrecognized label formatting. Should be either [0, 1] or ['positive', 'negative']")
 
     @property
     def numeric_labels(self) -> pd.Series:
         # Labels in Cohere model must be strings
-        return self.df.label
+        return self.labels.apply(lambda x: [0, 1][x == 'positive'])
 
     @property
     def text_to_list(self) -> List[str]:
@@ -56,8 +61,8 @@ def get_test_dir():
 
 if __name__ == "__main__":
 
-    train_df = Dataset(get_training_dir())
+    train_df = Dataset(full_dir=get_training_dir())
     train_df.load()
-    test_df = Dataset(get_test_dir())
+    test_df = Dataset(full_dir=get_test_dir())
     test_df.load()
     print('something')

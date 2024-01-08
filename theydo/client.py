@@ -15,9 +15,14 @@ def generate_response(prompt: str):
     return response.json()
 
 
-# Define a function to classify a request
-def classify_request(examples: list[dict[str, str]], inputs: list[str]):
-    data = {"examples": examples, "inputs": inputs}
+def classify_request(inputs: list[str], training_data: list[dict[str, str]]):
+    data = {"training_data": training_data, "inputs": inputs}
+    response = requests.post(url=f"{BASE_URL}/classify", json=data)
+    return response.json()
+
+
+def classify_request_with_evaluation(inputs: list[str], training_data: list[dict[str, str]], test_data: list[dict[str, str]]):
+    data = {"training_data": training_data, "inputs": inputs, "test_data": test_data}
     response = requests.post(url=f"{BASE_URL}/classify", json=data)
     return response.json()
 
@@ -45,7 +50,9 @@ if __name__ == "__main__":
     # print("Generated Response:", generated_response)
 
     # Classify a request
-    example_data = [{'text': text, 'label': label} for text, label in zip(training_set.text_to_list, training_set.labels_to_list)]
+    training_data = [{'text': text, 'label': label} for text, label in zip(training_set.text_to_list, training_set.labels_to_list)]
+    test_data = [{'text': text, 'label': label} for text, label in zip(test_set.text_to_list, test_set.labels_to_list)]
     input_data = test_set.text_to_list
-    classification = classify_request(example_data, input_data)
-    print("Classification Response:", classification)
+    # results = classify_request(input_data, training_data)
+    results_with_eval = classify_request_with_evaluation(input_data, training_data, test_data)
+    print("Classification Response:", results_with_eval)

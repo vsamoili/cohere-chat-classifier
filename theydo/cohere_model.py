@@ -63,8 +63,8 @@ if __name__ == "__main__":
     training_set.df = training_set.df.sample(frac=1)
     test_set.df = test_set.df.sample(frac=1)
 
-    training_set.df = training_set.df.iloc[:200, :]
-    test_set.df = test_set.df.iloc[:90, :]
+    training_set.df = training_set.df.iloc[:100, :]
+    test_set.df = test_set.df.iloc[:10, :]
 
     examples = make_examples([(text, label) for text, label in zip(training_set.text_to_list, training_set.labels_to_list)])
 
@@ -74,10 +74,10 @@ if __name__ == "__main__":
     )
 
     metrics = {
-        'acc': calculate_metric(pred_data=results, eval_data=test_set, metric='acc'),
-        'prec': calculate_metric(pred_data=results, eval_data=test_set, metric='prec'),
-        'rec': calculate_metric(pred_data=results, eval_data=test_set, metric='rec'),
-        'f1': calculate_metric(pred_data=results, eval_data=test_set, metric='f1'),
+        'accuracy_avg': calculate_metric(pred_data=results, eval_data=test_set, metric='accuracy_avg'),
+        # 'prec': calculate_metric(pred_data=results, eval_data=test_set, metric='prec'),
+        # 'rec': calculate_metric(pred_data=results, eval_data=test_set, metric='rec'),
+        # 'f1': calculate_metric(pred_data=results, eval_data=test_set, metric='f1'),
         # 'auc': calculate_metric(pred_data=results, eval_data=test_set, metric='auc')
     }
 

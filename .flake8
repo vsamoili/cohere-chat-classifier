@@ -1,0 +1,21 @@
+[flake8]
+max-line-length = 120
+exclude =
+    .git
+    __pycache__
+    setup.py
+    build
+    dist
+    releases
+    .venv
+    .tox
+    .mypy_cache
+    .pytest_cache
+    .vscode
+    .github
+    venv/
+    tests/fixtures/
+    tests/repositories/fixtures/
+    tests/utils/fixtures/
+    playground/
+    docs_src/
