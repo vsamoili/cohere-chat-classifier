@@ -38,7 +38,7 @@ if __name__ == "__main__":
     test_set.df = test_set.df.sample(frac=1)
 
     training_set.df = training_set.df.iloc[:100, :]
-    test_set.df = test_set.df.iloc[:10, :]
+    test_set.df = test_set.df.iloc[:90, :]
 
     # Get server status
     status = get_status()

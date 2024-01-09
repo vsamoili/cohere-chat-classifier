@@ -24,10 +24,16 @@ class Dataset:
     @property
     def labels(self) -> pd.Series:
         # Labels in Cohere model must be strings
-        if set(self.df.label) == {0, 1}:
+
+        # Case where labels in dataset are a mix of 0, 1 or 0 only or 1 only (small datasets)
+        if set(self.df.label) - {0, 1} == set():
             return self.df.label.apply(lambda x: ['negative', 'positive'][x == 1])
-        elif set(self.df.label) == {'positive', 'negative'}:
+
+        # Case where labels are a mix of 'positive', 'negative' or 'negative' only or 'positive' only (small datasets)
+        elif set(self.df.label) - {'positive', 'negative'} == set():
             return self.df.label
+
+        # Incorrect label format case
         else:
             raise LabelFormatError("Unrecognized label formatting. Should be either [0, 1] or ['positive', 'negative']")
 
