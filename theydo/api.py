@@ -5,12 +5,12 @@ from cohere.responses.generation import Generations
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from theydo.cohere_model import CohereModel, make_examples
+from theydo.cohere_model import CohereChat, make_examples
 from theydo.evaluation import calculate_all
 from theydo.helpers import make_dataset_from_request_data, make_dataset_from_clf_data, make_dataset_from_chat_response
 
 app = FastAPI()
-model = CohereModel()
+model = CohereChat()
 
 
 class Data(BaseModel):

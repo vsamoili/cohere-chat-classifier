@@ -100,7 +100,7 @@ to be classified and 'label' is one of 'positive' or 'negative'. Here is the lis
 
             logger.info(f"Classifying {i+4} out of {len(inputs)} reviews...")
             # Iterate through inputs 4 at a time
-            inputs = inputs[4*i:4*i+4]
+            current_inputs = inputs[4*i:4*i+4]
             continuation_prompt = False if i == 0 else True
 
             complete_message = self.create_review_prompt(inputs, continuation_prompt=continuation_prompt)
