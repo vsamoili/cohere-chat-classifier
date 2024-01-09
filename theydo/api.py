@@ -1,16 +1,16 @@
 from typing import Optional
 
 from cohere.responses.classify import Classifications
-from cohere.responses.generation import Generations
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from theydo.cohere_model import CohereChat, make_examples
+from theydo.cohere_model import CohereChat, make_examples, CohereClassifier
 from theydo.evaluation import calculate_all
 from theydo.helpers import make_dataset_from_request_data, make_dataset_from_clf_data, make_dataset_from_chat_response
 
 app = FastAPI()
-model = CohereChat()
+gen_model = CohereChat()
+clf_model = CohereClassifier()
 
 
 class Data(BaseModel):
@@ -20,7 +20,7 @@ class Data(BaseModel):
 
 class ClassificationRequest(BaseModel):
     inputs: list[str]
-    training_data: list[Data]
+    training_data: Optional[list[Data]] = None
     test_data: Optional[list[Data]] = None
 
 
@@ -76,7 +76,7 @@ async def read_root():
 async def classify(request_data: ClassificationRequest) -> ClassificationResponse:
     inputs = request_data.inputs
     training_data = [(item.text, item.label) for item in request_data.training_data]
-    clf_results = model.classify(inputs=inputs, examples=make_examples(training_data))
+    clf_results = clf_model.classify(inputs=inputs, examples=make_examples(training_data))
 
     if request_data.test_data:
         test_data = [(item.text, item.label) for item in request_data.test_data]
@@ -91,12 +91,7 @@ async def classify(request_data: ClassificationRequest) -> ClassificationRespons
 @app.post("/classify_with_prompt")
 async def classify_with_prompt(request_data: ClassificationRequest) -> ClassificationResponse:
     inputs = request_data.inputs
-    if request_data.training_data:
-        few_shot_examples = [(item.text, item.label) for item in request_data.training_data][:5]
-    else:
-        few_shot_examples = None
-
-    clf_results = model.classify_with_prompt(inputs=inputs, few_shot_examples=few_shot_examples)
+    clf_results = gen_model.classify_with_prompt(inputs=inputs)
 
     if request_data.test_data:
         test_data = [(item.text, item.label) for item in request_data.test_data]

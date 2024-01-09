@@ -1,17 +1,14 @@
+from typing import Optional
+
 import requests
 
 from theydo.data_model import get_test_dir, Dataset, get_training_dir
 
-BASE_URL = "http://127.0.0.1:80"
+BASE_URL = "http://127.0.0.1:8000"
 
 
 def get_status():
     response = requests.get(f"{BASE_URL}/status")
-    return response.json()
-
-
-def generate_response(prompt: str):
-    response = requests.post(f"{BASE_URL}/generate/{prompt}")
     return response.json()
 
 
@@ -21,9 +18,9 @@ def classify_request(inputs: list[str], training_data: list[dict[str, str]]):
     return response.json()
 
 
-def classify_request_with_evaluation(inputs: list[str], training_data: list[dict[str, str]], test_data: list[dict[str, str]]):
+def classify_request_with_evaluation(inputs: list[str], training_data: Optional[list[dict[str, str]]] = None, test_data: Optional[list[dict[str, str]]] = None):
     data = {"training_data": training_data, "inputs": inputs, "test_data": test_data}
-    response = requests.post(url=f"{BASE_URL}/classify", json=data)
+    response = requests.post(url=f"{BASE_URL}/classify_with_prompt", json=data)
     return response.json()
 
 
@@ -38,7 +35,7 @@ if __name__ == "__main__":
     test_set.df = test_set.df.sample(frac=1)
 
     training_set.df = training_set.df.iloc[:100, :]
-    test_set.df = test_set.df.iloc[:90, :]
+    test_set.df = test_set.df.iloc[:50, :]
 
     # Get server status
     status = get_status()
@@ -54,5 +51,5 @@ if __name__ == "__main__":
     test_data = [{'text': text, 'label': label} for text, label in zip(test_set.text_to_list, test_set.labels_to_list)]
     input_data = test_set.text_to_list
     # results = classify_request(input_data, training_data)
-    results_with_eval = classify_request_with_evaluation(input_data, training_data, test_data)
+    results_with_eval = classify_request_with_evaluation(inputs=input_data, training_data=None, test_data=test_data)
     print("Classification Response:", results_with_eval)
