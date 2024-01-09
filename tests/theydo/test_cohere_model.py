@@ -1,16 +1,28 @@
 from unittest.mock import patch, MagicMock
 import pytest
 from theydo.cohere_model import CohereChat
+from theydo import config
 
 
 @patch('theydo.cohere_model.cohere.Client')
 @patch('theydo.cohere_model.os.getenv', return_value='dummy_api_key')
 def test_init(mock_getenv, mock_client):
-    chat = CohereChat()
+    # Test initialization with default base_message
+    chat_default = CohereChat()
     mock_getenv.assert_called_with('COHERE_API_KEY')
     mock_client.assert_called_with('dummy_api_key')
-    assert chat._gen_temperature == 0.3
-    # Add more assertions here to test the rest of the initialization logic
+    assert chat_default.model is not None
+    assert chat_default._clf_model == config['classification_model']
+    assert chat_default._gen_model == config['generation_model']
+    assert chat_default._gen_temperature == 0.3
+    assert chat_default.start_review_token == '<START>'
+    assert chat_default.end_review_token == '<END>'
+    assert chat_default.reviews_to_parse_at_once == 3
+    assert chat_default.chat_base_message.startswith("You are a sentiment analysis classifier.")
+
+    custom_message = "Custom base message"
+    chat_custom = CohereChat(base_message=custom_message)
+    assert chat_custom.chat_base_message == custom_message
 
 
 def test_gen_model_getter():
@@ -62,10 +74,8 @@ def test_chat(mock_chat):
 @patch('theydo.cohere_model.CohereChat.chat')
 @patch('theydo.cohere_model.CohereChat.create_review_prompt')
 def test_classify_with_prompt(mock_create_review_prompt, mock_chat, mock_parse_chat_response):
-    # Mock responses for the chat method
-    mock_chat.return_value = MagicMock(text="chat_response")
 
-    # Mock responses for parsing chat response
+    mock_chat.return_value = MagicMock(text="chat_response")
     mock_parse_chat_response.side_effect = [
         [{"text": "review1", "label": "positive"}],
         [{"text": "review2", "label": "negative"}],
@@ -76,20 +86,12 @@ def test_classify_with_prompt(mock_create_review_prompt, mock_chat, mock_parse_c
     chat.reviews_to_parse_at_once = 2
 
     inputs = ["review1", "review2", "review3"]
-
-    # Call the method under test
     results = chat.classify_with_prompt(inputs)
 
-    # Assertions for create_review_prompt
     assert mock_create_review_prompt.call_count == 2
-
-    # Assertions for chat method
     assert mock_chat.call_count == 2
-
-    # Assertions for parse_chat_response
     assert mock_parse_chat_response.call_count == 2
 
-    # Assertions for the result
     expected_results = [
         {"text": "review1", "label": "positive"},
         {"text": "review2", "label": "negative"}

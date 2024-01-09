@@ -41,11 +41,6 @@ if __name__ == "__main__":
     status = get_status()
     print("Server Status:", status)
 
-    # # Generate a response
-    # prompt = "Hello, World!"
-    # generated_response = generate_response(prompt)
-    # print("Generated Response:", generated_response)
-
     # Classify a request
     training_data = [{'text': text, 'label': label} for text, label in zip(training_set.text_to_list, training_set.labels_to_list)]
     test_data = [{'text': text, 'label': label} for text, label in zip(test_set.text_to_list, test_set.labels_to_list)]
