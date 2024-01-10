@@ -1,13 +1,13 @@
-import os
-from typing import List, Tuple, Optional
-import re
 import json
+import logging
+import os
+import re
 import uuid
+from typing import List, Tuple, Optional
 
 import cohere
-from cohere.responses.classify import Example, Classifications
 from cohere.responses.chat import Chat
-import logging
+from cohere.responses.classify import Example, Classifications
 
 from theydo import config
 from theydo.data_model import get_training_dir, get_test_dir, Dataset

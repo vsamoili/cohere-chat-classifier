@@ -1,8 +1,11 @@
-import pytest
 from unittest.mock import patch
+
+import pandas as pd
+import pytest
 
 from theydo.exceptions import LabelFormatError
 from theydo.helpers import *
+from theydo.data_model import Dataset
 
 
 def test_dataset_initialization_with_df():

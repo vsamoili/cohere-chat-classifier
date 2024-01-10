@@ -1,7 +1,9 @@
 from unittest.mock import patch, MagicMock
+
 import pytest
-from theydo.cohere_model import CohereChat
+
 from theydo import config
+from theydo.cohere_model import CohereChat
 
 
 @patch('theydo.cohere_model.cohere.Client')
@@ -127,6 +129,7 @@ def test_create_review_prompt_single_review():
     expected_single_prompt = chat.chat_base_message + f'\n{chat.start_review_token}\n' + texts[0] + f'\n{chat.end_review_token}\n'
 
     assert single_review_prompt == expected_single_prompt
+
 
 @patch('theydo.cohere_model.CohereChat.parse_chat_response', return_value=[])
 @patch('theydo.cohere_model.CohereChat.chat', return_value=MagicMock(text="chat_response"))
