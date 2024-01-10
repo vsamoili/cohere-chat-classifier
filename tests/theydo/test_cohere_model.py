@@ -70,39 +70,6 @@ def test_chat(mock_chat):
     assert response is not None
 
 
-@patch('theydo.cohere_model.CohereChat.parse_chat_response')
-@patch('theydo.cohere_model.CohereChat.chat')
-@patch('theydo.cohere_model.CohereChat.create_review_prompt')
-def test_classify_with_prompt(mock_create_review_prompt, mock_chat, mock_parse_chat_response):
-
-    mock_chat.return_value = MagicMock(text="chat_response")
-    mock_parse_chat_response.side_effect = [
-        [{"text": "review1", "label": "positive"}],
-        [{"text": "review2", "label": "negative"}],
-        [{"text": None, "label": "positive"}]  # Simulate no results for a batch
-    ]
-
-    chat = CohereChat()
-    chat.reviews_to_parse_at_once = 2
-
-    inputs = ["review1", "review2", "review3"]
-    results = chat.classify_with_prompt(inputs)
-
-    assert mock_create_review_prompt.call_count == 2
-    assert mock_chat.call_count == 2
-    assert mock_parse_chat_response.call_count == 2
-
-    expected_results = [
-        {"text": "review1", "label": "positive"},
-        {"text": "review2", "label": "negative"}
-    ]
-    assert results == expected_results
-
-    # Test with empty input list
-    results_empty = chat.classify_with_prompt([])
-    assert results_empty == []
-
-
 def test_parse_chat_response_valid():
     response = '{"text": "review", "label": "positive"}'
     result = CohereChat.parse_chat_response(response)

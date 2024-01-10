@@ -106,7 +106,7 @@ class CohereChat:
             raise ValueError("Temperature must be a value between 0.0 and 2.0.")
         self._gen_temperature = value
 
-    def classify_with_prompt(self, inputs: List[str]) -> list[dict[str, str]]:
+    def classify_with_prompt(self, inputs: List[str], max_retries_per_batch: int = 3) -> list[dict[str, str]]:
         """
         Classify a list of inputs using a prompt-based approach.
 
@@ -120,6 +120,7 @@ class CohereChat:
         successful results across batches and returns them.
 
         :param inputs: A list of text inputs to be classified.
+        :param max_retries_per_batch: A maximum set of retries per batch when calling the Cohere API.
         :return: A list of dictionaries containing classification results. Each dictionary corresponds to a
                  classified input.
         """
@@ -144,9 +145,12 @@ class CohereChat:
             results = []
 
             # Make the call, parse results and retry if unsuccessful
-            while len(results) != len(current_inputs):
+            retries_per_batch = 0
+            while len(results) != len(current_inputs) or retries_per_batch < max_retries_per_batch:
+                # import pdb; pdb.set_trace()
                 response = self.chat(complete_message, conversation_id=conversation_id)
                 results = self.parse_chat_response(response.text)
+                retries_per_batch += 1
 
             # Move cursor
             i += self.reviews_to_parse_at_once
