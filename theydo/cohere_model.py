@@ -146,8 +146,7 @@ class CohereChat:
 
             # Make the call, parse results and retry if unsuccessful
             retries_per_batch = 0
-            while len(results) != len(current_inputs) or retries_per_batch < max_retries_per_batch:
-                # import pdb; pdb.set_trace()
+            while len(results) != len(current_inputs) and retries_per_batch < max_retries_per_batch:
                 response = self.chat(complete_message, conversation_id=conversation_id)
                 results = self.parse_chat_response(response.text)
                 retries_per_batch += 1

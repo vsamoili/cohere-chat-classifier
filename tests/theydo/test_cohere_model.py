@@ -127,3 +127,65 @@ def test_create_review_prompt_single_review():
     expected_single_prompt = chat.chat_base_message + f'\n{chat.start_review_token}\n' + texts[0] + f'\n{chat.end_review_token}\n'
 
     assert single_review_prompt == expected_single_prompt
+
+@patch('theydo.cohere_model.CohereChat.parse_chat_response', return_value=[])
+@patch('theydo.cohere_model.CohereChat.chat', return_value=MagicMock(text="chat_response"))
+@patch('theydo.cohere_model.logger')
+def test_classify_with_prompt_retry_logic(mock_logger, mock_chat, mock_parse_chat_response):
+    chat = CohereChat()
+    chat.reviews_to_parse_at_once = 1
+    inputs = ["review1"]
+    max_retries_per_batch = 2
+
+    chat.classify_with_prompt(inputs, max_retries_per_batch)
+
+    # Assertions
+    assert mock_chat.call_count == max_retries_per_batch
+    mock_logger.warning.assert_called_once()
+
+
+@patch('theydo.cohere_model.CohereChat.parse_chat_response')
+@patch('theydo.cohere_model.CohereChat.chat')
+@patch('theydo.cohere_model.CohereChat.create_review_prompt')
+@patch('theydo.cohere_model.uuid.uuid4', return_value='test_uuid')
+@patch('theydo.cohere_model.logger')
+def test_classify_with_prompt_batch_processing(mock_logger, mock_uuid, mock_create_review_prompt, mock_chat, mock_parse_chat_response):
+    chat = CohereChat()
+    chat.reviews_to_parse_at_once = 2
+    inputs = ["review1", "review2", "review3"]
+    max_retries_per_batch = 3
+
+    # Mocking chat response and parse_chat_response
+    mock_chat.return_value = MagicMock(text="chat_response")
+    mock_parse_chat_response.side_effect = [
+        [{"result": "output1"}, {"result": "output2"}],  # First batch response
+        [],  # Second batch first try (empty results)
+        [{"result": "output3"}]  # Second batch second try (successful results)
+    ]
+
+    # Execute the method
+    results = chat.classify_with_prompt(inputs, max_retries_per_batch)
+
+    # Assertions
+    assert mock_create_review_prompt.call_count == 2
+    assert mock_chat.call_count == 3  # 2 batches, with 1 retry in the second batch
+    assert mock_parse_chat_response.call_count == 3
+    assert len(results) == 3
+    mock_logger.info.assert_called()
+    mock_uuid.assert_called()
+    mock_logger.warning.assert_not_called()  # No warnings as all retries were successful
+
+
+@patch('theydo.cohere_model.CohereChat.parse_chat_response', return_value=[])
+@patch('theydo.cohere_model.CohereChat.chat', return_value=MagicMock(text="chat_response"))
+@patch('theydo.cohere_model.logger')
+def test_classify_with_prompt_no_results_warning(mock_logger, mock_chat, mock_parse_chat_response):
+    chat = CohereChat()
+    inputs = ["review1"]
+    max_retries_per_batch = 3
+
+    chat.classify_with_prompt(inputs, max_retries_per_batch)
+
+    # Assertions
+    assert mock_chat.call_count == max_retries_per_batch
+    mock_logger.warning.assert_called_with("No classification results found in the latest generation. Please try again.")
