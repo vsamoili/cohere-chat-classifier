@@ -12,39 +12,39 @@ def get_status():
     return response.json()
 
 
-def classify_request(inputs: list[str], training_data: list[dict[str, str]]):
+def classify_prompt_request(inputs: list[str], training_data: list[dict[str, str]]):
     data = {"training_data": training_data, "inputs": inputs}
     response = requests.post(url=f"{BASE_URL}/classify", json=data)
     return response.json()
 
 
-def classify_request_with_evaluation(inputs: list[str], test_data: Optional[list[dict[str, str]]] = None):
-    data = {"training_data": training_data, "inputs": inputs, "test_data": test_data}
+def classify_prompt_request_with_evaluation(inputs: list[str], test_data: Optional[list[dict[str, str]]] = None):
+    data = {"training_data": None, "inputs": inputs, "test_data": test_data}
     response = requests.post(url=f"{BASE_URL}/classify_with_prompt", json=data)
     return response.json()
 
 
-# Example usage
+# Example usage for Chat component
 if __name__ == "__main__":
 
-    training_set = Dataset(full_dir=get_training_dir())
+    # Load test set from configured directory
     test_set = Dataset(full_dir=get_test_dir())
-    training_set.load()
     test_set.load()
-    training_set.df = training_set.df.sample(frac=1)
+
+    # Shuffle data
     test_set.df = test_set.df.sample(frac=1)
 
-    training_set.df = training_set.df.iloc[:100, :]
+    # Take small subsets
     test_set.df = test_set.df.iloc[:3, :]
 
     # Get server status
     status = get_status()
     print("Server Status:", status)
 
-    # Classify a request
-    training_data = [{'text': text, 'label': label} for text, label in zip(training_set.text_to_list, training_set.labels_to_list)]
+    # Classify a request with evaluation metrics using the Chat endpoint
     test_data = [{'text': text, 'label': label} for text, label in zip(test_set.text_to_list, test_set.labels_to_list)]
     input_data = test_set.text_to_list
-    # results = classify_request(input_data, training_data)
-    results_with_eval = classify_request_with_evaluation(inputs=input_data, test_data=test_data)
+
+    # results = classify_prompt_request(input_data, training_data)
+    results_with_eval = classify_prompt_request_with_evaluation(inputs=input_data, test_data=test_data)
     print("Classification Response:", results_with_eval)

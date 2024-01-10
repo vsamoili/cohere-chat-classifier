@@ -63,12 +63,3 @@ def get_test_dir():
         return Path(__file__).resolve().parent.parent / Path(config.get('test_dir'))
     except FileNotFoundError:
         raise DatasetDoesNotExist("Training dataset does not exist. Please check config file and try again.")
-
-
-if __name__ == "__main__":
-
-    train_df = Dataset(full_dir=get_training_dir())
-    train_df.load()
-    test_df = Dataset(full_dir=get_test_dir())
-    test_df.load()
-    print('something')

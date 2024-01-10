@@ -201,7 +201,6 @@ where 'text' is the original review  to be classified and 'label' is one of 'pos
         return found_objs
 
 
-
 if __name__ == "__main__":
     model = CohereChat()
     training_set = Dataset(full_dir=get_training_dir())
