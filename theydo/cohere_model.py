@@ -131,19 +131,28 @@ class CohereChat:
         while i < len(inputs):
 
             logger.info(f"Classifying {i+self.reviews_to_parse_at_once} out of {len(inputs)} reviews...")
-            # Iterate through inputs n at a time
+
+            # Iterate through inputs n at a time.
             current_inputs = inputs[i:i+self.reviews_to_parse_at_once]
+
+            # If this is the first iteration, we need to greet the Chatbot.
             continuation_prompt = False if i == 0 else True
 
+            # Construct complete message with reviews
             complete_message = self.create_review_prompt(current_inputs, continuation_prompt=continuation_prompt)
+
+            # Make The Call
             response = self.chat(complete_message, conversation_id=conversation_id)
+
+            # Parse results
             results = self.parse_chat_response(response.text)
+
+            # Move cursor
             i += self.reviews_to_parse_at_once
 
             if not results:
                 logger.warning("No classification results found in the latest generation. Please try again.")
             else:
-                # Collect results
                 all_results.extend(results)
 
         return all_results
@@ -203,24 +212,3 @@ class CohereChat:
                 found_objs.append({"text": "None", "label": "positive"})
 
         return found_objs
-
-
-if __name__ == "__main__":
-    model = CohereChat()
-    training_set = Dataset(full_dir=get_training_dir())
-    test_set = Dataset(full_dir=get_test_dir())
-    training_set.load()
-    test_set.load()
-    training_set.df = training_set.df.sample(frac=1, random_state=SEED)
-    test_set.df = test_set.df.sample(frac=1, random_state=SEED)
-
-    training_set.df = training_set.df.iloc[:100, :]
-    test_set.df = test_set.df.iloc[:20, :]
-
-    results = model.classify_with_prompt(test_set.text_to_list)
-    print('debug')
-
-    pred_data = make_dataset_from_chat_response(results)
-    eval_data = test_set
-    metrics = calculate_all(pred_data=pred_data, eval_data=eval_data)
-    print('response')
