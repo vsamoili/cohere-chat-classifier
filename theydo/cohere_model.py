@@ -64,11 +64,15 @@ class CohereChat:
         self.reviews_to_parse_at_once = 3
 
         if not base_message:
-            self.chat_base_message = f"""You are a sentiment analysis classifier. You will be provided a list of movie 
-reviews each starting with a start token "{self.start_review_token}" and ending with an end token "{self.end_review_token}". Classify each movie review as 
-'positive' or 'negative' based on its underlying sentiment. Provide your output in a JSON format with two keys: 'text' and 'label' 
-where 'text' is the original review  to be classified and 'label' is one of 'positive' or 'negative'. Here is the list:
-"""
+            self.chat_base_message = (
+                f"You are a sentiment analysis classifier. You will be provided a list of movie reviews each starting",
+                f"with a start token \"{self.start_review_token}\" and ending with an end token",
+                f"\"{self.end_review_token}\". Classify each movie review as 'positive' or 'negative' based on its",
+                f" underlying sentiment. Provide your output in a JSON format with two keys: 'text' and 'label' where",
+                f"'text' is the original review  to be classified and 'label' is one of 'positive' or 'negative'. Here",
+                f"is the list:"
+            )
+
         else:
             self.chat_base_message = base_message
 
