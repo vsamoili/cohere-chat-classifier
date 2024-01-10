@@ -35,7 +35,7 @@ if __name__ == "__main__":
     test_set.df = test_set.df.sample(frac=1)
 
     # Take small subsets
-    test_set.df = test_set.df.iloc[:3, :]
+    test_set.df = test_set.df.iloc[:20, :]
 
     # Get server status
     status = get_status()
