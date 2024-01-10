@@ -2,6 +2,8 @@
 
 A Python service that uses the open source Cohere LLM to perform sentiment analysis classification on the IMDB movie review dataset.
 
+<b> ATTENTION: BRANCHES OTHER THAN `main` ARE EXPERIMENTAL BRANCHES. </b>
+
 ## Table of Contents
 
 - [Overview](#overview)
