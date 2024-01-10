@@ -18,6 +18,9 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
+SEED = 1991
+
+
 class CohereClassifier:
 
     def __init__(self):
@@ -41,6 +44,10 @@ class CohereClassifier:
             inputs=inputs,
             examples=examples
         )
+
+
+def make_examples(inputs: List[Tuple[str, str]]) -> List[Example]:
+    return [Example(*item) for item in inputs]
 
 
 class CohereChat:
@@ -194,9 +201,6 @@ where 'text' is the original review  to be classified and 'label' is one of 'pos
         return found_objs
 
 
-def make_examples(inputs: List[Tuple[str, str]]) -> List[Example]:
-    return [Example(*item) for item in inputs]
-
 
 if __name__ == "__main__":
     model = CohereChat()
@@ -204,11 +208,11 @@ if __name__ == "__main__":
     test_set = Dataset(full_dir=get_test_dir())
     training_set.load()
     test_set.load()
-    training_set.df = training_set.df.sample(frac=1)
-    test_set.df = test_set.df.sample(frac=1)
+    training_set.df = training_set.df.sample(frac=1, random_state=SEED)
+    test_set.df = test_set.df.sample(frac=1, random_state=SEED)
 
     training_set.df = training_set.df.iloc[:100, :]
-    test_set.df = test_set.df.iloc[:10, :]
+    test_set.df = test_set.df.iloc[:20, :]
 
     results = model.classify_with_prompt(test_set.text_to_list)
     print('debug')

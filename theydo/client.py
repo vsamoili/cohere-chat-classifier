@@ -18,7 +18,7 @@ def classify_request(inputs: list[str], training_data: list[dict[str, str]]):
     return response.json()
 
 
-def classify_request_with_evaluation(inputs: list[str], training_data: Optional[list[dict[str, str]]] = None, test_data: Optional[list[dict[str, str]]] = None):
+def classify_request_with_evaluation(inputs: list[str], test_data: Optional[list[dict[str, str]]] = None):
     data = {"training_data": training_data, "inputs": inputs, "test_data": test_data}
     response = requests.post(url=f"{BASE_URL}/classify_with_prompt", json=data)
     return response.json()
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     test_set.df = test_set.df.sample(frac=1)
 
     training_set.df = training_set.df.iloc[:100, :]
-    test_set.df = test_set.df.iloc[:50, :]
+    test_set.df = test_set.df.iloc[:3, :]
 
     # Get server status
     status = get_status()
@@ -46,5 +46,5 @@ if __name__ == "__main__":
     test_data = [{'text': text, 'label': label} for text, label in zip(test_set.text_to_list, test_set.labels_to_list)]
     input_data = test_set.text_to_list
     # results = classify_request(input_data, training_data)
-    results_with_eval = classify_request_with_evaluation(inputs=input_data, training_data=None, test_data=test_data)
+    results_with_eval = classify_request_with_evaluation(inputs=input_data, test_data=test_data)
     print("Classification Response:", results_with_eval)
