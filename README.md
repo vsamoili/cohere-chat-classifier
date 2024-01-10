@@ -103,8 +103,6 @@ See `client.py` for input types.
 
 ## Project Structure
 
-Explain the structure of your project's directory and important files. For example:
-
 - `theydo/`: Application logic.
 - `tests/`: Unit tests with the pytest framework.
 - `poetry.lock` and `pyproject.toml`: Poetry files for dependency management.
