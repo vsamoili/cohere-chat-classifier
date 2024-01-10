@@ -108,21 +108,22 @@ class CohereChat:
 
     def classify_with_prompt(self, inputs: List[str], max_retries_per_batch: int = 3) -> list[dict[str, str]]:
         """
-        Classify a list of inputs using a prompt-based approach.
+        Classify a list of inputs using a prompt-based approach, with retry logic for each batch of inputs.
 
-        This function classifies a list of inputs by generating and sending prompts to a chat interface
-        in batches. Each batch of inputs is processed by creating a review prompt (using 'create_review_prompt'),
-        sending this prompt to the chat interface, and then parsing the chat response. The function handles
-        the inputs in chunks of size 'self.reviews_to_parse_at_once' and maintains a conversation flow with
-        the chat interface using a unique 'conversation_id'.
+        This function classifies inputs by generating and sending prompts to a chat interface in batches. It processes
+        each batch by creating a review prompt (using 'create_review_prompt'), sending this prompt to the chat
+        interface, and then parsing the chat response. The inputs are handled in chunks of size 'self.reviews_to_parse_at_once',
+        and a unique 'conversation_id' is used to maintain the conversation flow with the chat interface.
 
-        If any batch does not yield classification results, a warning is logged. The function accumulates all
-        successful results across batches and returns them.
+        The function implements a retry mechanism for each batch, where if the expected number of classification results
+        is not obtained, it retries the call up to a maximum of 'max_retries_per_batch' times. If no classification results
+        are obtained after the maximum number of retries, a warning is logged.
 
         :param inputs: A list of text inputs to be classified.
-        :param max_retries_per_batch: A maximum set of retries per batch when calling the Cohere API.
-        :return: A list of dictionaries containing classification results. Each dictionary corresponds to a
-                 classified input.
+        :param max_retries_per_batch: The maximum number of retry attempts per batch if the expected number of
+                                      classification results is not obtained. Defaults to 3.
+        :return: A list of dictionaries containing classification results. Each dictionary corresponds to a classified input.
+                 If a batch fails to yield results after the maximum number of retries, it may return fewer results than inputs.
         """
 
         conversation_id = str(uuid.uuid4())
