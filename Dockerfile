@@ -14,4 +14,4 @@ RUN poetry install --no-dev
 EXPOSE 8000
 
 # Run the application
-ENTRYPOINT ["uvicorn", "theydo.api:app", "--host", "0.0.0.0", "--port", "8000"]
+ENTRYPOINT ["uvicorn", "cohere_chat_classifier.api:app", "--host", "0.0.0.0", "--port", "8000"]

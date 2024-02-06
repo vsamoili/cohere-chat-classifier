@@ -3,8 +3,8 @@ from typing import List, Optional
 
 import pandas as pd
 
-from theydo import config
-from theydo.exceptions import DatasetDoesNotExist, LabelFormatError
+from cohere_chat_classifier import config
+from cohere_chat_classifier.exceptions import DatasetDoesNotExist, LabelFormatError
 
 
 class Dataset:

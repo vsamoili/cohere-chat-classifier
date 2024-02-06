@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 
-from theydo.data_model import Dataset
+from cohere_chat_classifier.data_model import Dataset
 
 METRICS = {
     'accuracy_avg': accuracy_score,

@@ -2,8 +2,8 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-from theydo import config
-from theydo.cohere_model import CohereChat
+from cohere_chat_classifier import config
+from cohere_chat_classifier.cohere_model import CohereChat
 
 
 @patch('cohere_chat_classifier.cohere_model.cohere.Client')

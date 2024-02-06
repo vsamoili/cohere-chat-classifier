@@ -1,7 +1,7 @@
 import pandas as pd
 from cohere.responses import Classifications
 
-from theydo.data_model import Dataset
+from cohere_chat_classifier.data_model import Dataset
 
 
 def make_dataset_from_clf_data(clf_data: Classifications) -> Dataset:

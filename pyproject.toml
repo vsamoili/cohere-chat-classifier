@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "theydo"
+name = "cohere-chat-classifier"
 version = "0.1.0"
-description = "Repository for TheyDo take-home assignment."
+description = "Repository that leverages the Cohere Chat model for simple sentiment analysis on the IMDb movie dataset."
 authors = ["Vera Samoili"]
 readme = "README.md"
 

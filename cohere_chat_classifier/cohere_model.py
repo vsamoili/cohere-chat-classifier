@@ -9,10 +9,10 @@ import cohere
 from cohere.responses.chat import Chat
 from cohere.responses.classify import Example, Classifications
 
-from theydo import config
-from theydo.data_model import get_training_dir, get_test_dir, Dataset
-from theydo.evaluation import calculate_all
-from theydo.helpers import make_dataset_from_chat_response
+from cohere_chat_classifier import config
+from cohere_chat_classifier.data_model import get_training_dir, get_test_dir, Dataset
+from cohere_chat_classifier.evaluation import calculate_all
+from cohere_chat_classifier.helpers import make_dataset_from_chat_response
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

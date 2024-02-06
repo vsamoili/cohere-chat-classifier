@@ -4,9 +4,9 @@ from cohere.responses.classify import Classifications
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from theydo.cohere_model import CohereChat, make_examples, CohereClassifier
-from theydo.evaluation import calculate_all
-from theydo.helpers import make_dataset_from_request_data, make_dataset_from_clf_data, make_dataset_from_chat_response
+from cohere_chat_classifier.cohere_model import CohereChat, make_examples, CohereClassifier
+from cohere_chat_classifier.evaluation import calculate_all
+from cohere_chat_classifier.helpers import make_dataset_from_request_data, make_dataset_from_clf_data, make_dataset_from_chat_response
 
 app = FastAPI()
 gen_model = CohereChat()

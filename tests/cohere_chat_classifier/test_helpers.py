@@ -2,8 +2,8 @@ from unittest.mock import MagicMock
 
 import pandas as pd
 
-from theydo.data_model import Dataset
-from theydo.helpers import make_dataset_from_request_data, make_dataset_from_chat_response, make_dataset_from_clf_data
+from cohere_chat_classifier.data_model import Dataset
+from cohere_chat_classifier.helpers import make_dataset_from_request_data, make_dataset_from_chat_response, make_dataset_from_clf_data
 
 
 def test_make_dataset_from_clf_data():

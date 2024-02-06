@@ -2,7 +2,7 @@ from typing import Optional
 
 import requests
 
-from theydo.data_model import get_test_dir, Dataset
+from cohere_chat_classifier.data_model import get_test_dir, Dataset
 
 BASE_URL = "http://127.0.0.1:8000"
 
