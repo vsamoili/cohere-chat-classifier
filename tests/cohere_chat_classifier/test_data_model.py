@@ -19,7 +19,7 @@ def test_dataset_initialization_without_df():
     assert dataset.df is None
 
 
-@patch('theydo.data_model.pd.read_parquet')
+@patch('cohere_chat_classifier.data_model.pd.read_parquet')
 def test_load(mock_read_parquet):
     mock_df = pd.DataFrame({'text': ['sample1'], 'label': [1]})
     mock_read_parquet.return_value = mock_df

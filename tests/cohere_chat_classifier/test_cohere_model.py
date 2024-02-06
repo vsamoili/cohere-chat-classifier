@@ -6,8 +6,8 @@ from theydo import config
 from theydo.cohere_model import CohereChat
 
 
-@patch('theydo.cohere_model.cohere.Client')
-@patch('theydo.cohere_model.os.getenv', return_value='dummy_api_key')
+@patch('cohere_chat_classifier.cohere_model.cohere.Client')
+@patch('cohere_chat_classifier.cohere_model.os.getenv', return_value='dummy_api_key')
 def test_init(mock_getenv, mock_client):
     # Test initialization with default base_message
     chat_default = CohereChat()
@@ -61,7 +61,7 @@ def test_gen_temperature_setter_invalid():
         chat.gen_temperature = -1
 
 
-@patch('theydo.cohere_model.cohere.Client.chat', return_value=MagicMock())
+@patch('cohere_chat_classifier.cohere_model.cohere.Client.chat', return_value=MagicMock())
 def test_chat(mock_chat):
     chat = CohereChat()
     response = chat.chat("message", "conv_id")
@@ -78,7 +78,7 @@ def test_parse_chat_response_valid():
     assert result[0]["label"] == "positive"
 
 
-@patch('theydo.cohere_model.re.findall', return_value=['invalid_json'])
+@patch('cohere_chat_classifier.cohere_model.re.findall', return_value=['invalid_json'])
 def test_parse_chat_response_invalid(mock_findall):
     response = 'invalid_json'
     result = CohereChat.parse_chat_response(response)
@@ -131,9 +131,9 @@ def test_create_review_prompt_single_review():
     assert single_review_prompt == expected_single_prompt
 
 
-@patch('theydo.cohere_model.CohereChat.parse_chat_response', return_value=[])
-@patch('theydo.cohere_model.CohereChat.chat', return_value=MagicMock(text="chat_response"))
-@patch('theydo.cohere_model.logger')
+@patch('cohere_chat_classifier.cohere_model.CohereChat.parse_chat_response', return_value=[])
+@patch('cohere_chat_classifier.cohere_model.CohereChat.chat', return_value=MagicMock(text="chat_response"))
+@patch('cohere_chat_classifier.cohere_model.logger')
 def test_classify_with_prompt_retry_logic(mock_logger, mock_chat, mock_parse_chat_response):
     chat = CohereChat()
     chat.reviews_to_parse_at_once = 1
@@ -147,11 +147,11 @@ def test_classify_with_prompt_retry_logic(mock_logger, mock_chat, mock_parse_cha
     mock_logger.warning.assert_called_once()
 
 
-@patch('theydo.cohere_model.CohereChat.parse_chat_response')
-@patch('theydo.cohere_model.CohereChat.chat')
-@patch('theydo.cohere_model.CohereChat.create_review_prompt')
-@patch('theydo.cohere_model.uuid.uuid4', return_value='test_uuid')
-@patch('theydo.cohere_model.logger')
+@patch('cohere_chat_classifier.cohere_model.CohereChat.parse_chat_response')
+@patch('cohere_chat_classifier.cohere_model.CohereChat.chat')
+@patch('cohere_chat_classifier.cohere_model.CohereChat.create_review_prompt')
+@patch('cohere_chat_classifier.cohere_model.uuid.uuid4', return_value='test_uuid')
+@patch('cohere_chat_classifier.cohere_model.logger')
 def test_classify_with_prompt_batch_processing(mock_logger, mock_uuid, mock_create_review_prompt, mock_chat, mock_parse_chat_response):
     chat = CohereChat()
     chat.reviews_to_parse_at_once = 2
@@ -179,9 +179,9 @@ def test_classify_with_prompt_batch_processing(mock_logger, mock_uuid, mock_crea
     mock_logger.warning.assert_not_called()  # No warnings as all retries were successful
 
 
-@patch('theydo.cohere_model.CohereChat.parse_chat_response', return_value=[])
-@patch('theydo.cohere_model.CohereChat.chat', return_value=MagicMock(text="chat_response"))
-@patch('theydo.cohere_model.logger')
+@patch('cohere_chat_classifier.cohere_model.CohereChat.parse_chat_response', return_value=[])
+@patch('cohere_chat_classifier.cohere_model.CohereChat.chat', return_value=MagicMock(text="chat_response"))
+@patch('cohere_chat_classifier.cohere_model.logger')
 def test_classify_with_prompt_no_results_warning(mock_logger, mock_chat, mock_parse_chat_response):
     chat = CohereChat()
     inputs = ["review1"]
