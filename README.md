@@ -1,4 +1,4 @@
-# theydo
+# cohere-chat-classifier
 
 A Python service that uses the open source Cohere LLM to perform sentiment analysis classification on the IMDB movie review dataset.
 
@@ -15,7 +15,7 @@ A Python service that uses the open source Cohere LLM to perform sentiment analy
 
 ## Overview
 
-`theydo` is a Python service designed to leverage the open-source Cohere LLM (Language Model) for sentiment analysis classification on the IMDB movie review dataset. This service provides a user-friendly interface to analyze and classify the sentiment of movie reviews as "positive" or "negative". It has two main POST endpoints, one that uses the Cohere Classifier and another one for the requirement of this assignment, which is to use a prompt-response type of model to perform classifications. For the latter, the Cohere Chat component is used and manipulated given a suitable prompt and structure to enable its classification task. Both models can perform basic metrics calculations (accuracy, precision, recall, f1 score averages) if given a test set with ground truth labels. 
+`cohere-chat-classifier` is a Python service designed to leverage the open-source Cohere LLM (Language Model) for sentiment analysis classification on the IMDB movie review dataset. This service provides a user-friendly interface to analyze and classify the sentiment of movie reviews as "positive" or "negative". It has two main POST endpoints, one that uses the Cohere Classifier and another one for the requirement of this assignment, which is to use a prompt-response type of model to perform classifications. For the latter, the Cohere Chat component is used and manipulated given a suitable prompt and structure to enable its classification task. Both models can perform basic metrics calculations (accuracy, precision, recall, f1 score averages) if given a test set with ground truth labels. 
 
 ## Prerequisites
 
@@ -32,13 +32,13 @@ Follow these instructions to install:
 1. Clone this repository using SSH:
 
    ```bash
-   git clone git@github.com:<username>/theydo.git
+   git clone git@github.com:<username>/cohere-chat-classifier.git
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd theydo
+   cd cohere-chat-classifier
    ```
 
 3. Install project dependencies using Poetry:
@@ -50,7 +50,7 @@ Follow these instructions to install:
 4. Start the FastAPI application:
 
    ```bash
-   uvicorn theydo.app.main:app --host 0.0.0.0 --port 8000 --reload
+   uvicorn cohere-chat-classifier.app.main:app --host 0.0.0.0 --port 8000 --reload
    ```
 
 ## Usage
@@ -103,7 +103,7 @@ See `client.py` for input types.
 
 ## Project Structure
 
-- `theydo/`: Application logic.
+- `cohere-chat-classifier/`: Application logic.
 - `tests/`: Unit tests with the pytest framework.
 - `poetry.lock` and `pyproject.toml`: Poetry files for dependency management.
 - `.env`: a necessary file that stores the Cohere API key. See `.env_sample` for structure.
@@ -114,7 +114,7 @@ See `client.py` for input types.
 ### Build Docker Image
 
 ```bash
-docker build -t theydo .
+docker build -t cohere-chat-classifier .
 ```
 
 ### Run Docker Container
@@ -122,5 +122,5 @@ docker build -t theydo .
 The following command will run the container and startup the service using the `gunicorn` server:
 
 ```bash
-docker run -env_file ./.env -p 8000:8000 theydo:latest
+docker run -env_file ./.env -p 8000:8000 cohere-chat-classifier:latest
 ```
